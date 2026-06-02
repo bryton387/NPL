@@ -80,6 +80,36 @@ def calculate_average_word_length(text):
         return average_length
 
 
+def count_paragraphs(text):
+    if text.strip() == "":
+        return 1
+    else:
+        paragraphs = re.split(r"\n\s*\n", text.strip())
+        paragraph_count = 0
+
+        for paragraph in paragraphs:
+            if paragraph.strip() != "":
+                paragraph_count += 1
+
+        return paragraph_count
+
+
+def count_sentences(text):
+    if text.strip() == "":
+        return 1
+    else:
+        sentence_count = 0
+        index = 0
+
+        while index < len(text):
+            if text[index] == "." or text[index] == "!" or text[index] == "?":
+                sentence_count += 1
+
+            index += 1
+
+        return sentence_count
+
+
 def main():
     article = read_article("news_article.txt")
     search_word = "Apple"
@@ -87,6 +117,8 @@ def main():
     word_count = count_specific_word(article, search_word)
     most_common_word = identify_most_common_word(article)
     average_word_length = calculate_average_word_length(article)
+    paragraph_count = count_paragraphs(article)
+    sentence_count = count_sentences(article)
 
     print("News Article Text Analysis")
     print("--------------------------")
@@ -94,6 +126,8 @@ def main():
     print("Specific word count:", word_count)
     print("Most common word:", most_common_word)
     print("Average word length:", average_word_length)
+    print("Number of paragraphs:", paragraph_count)
+    print("Number of sentences:", sentence_count)
 
 
 if __name__ == "__main__":
