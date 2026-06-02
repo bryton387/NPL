@@ -41,16 +41,59 @@ def count_specific_word(text, search_word):
         return count
 
 
+def identify_most_common_word(text):
+    # Regex gets words without punctuation.
+    words = re.findall(r"\b\w+\b", text.lower())
+
+    if len(words) == 0:
+        return None
+    else:
+        word_counts = {}
+
+        for word in words:
+            if word in word_counts:
+                word_counts[word] += 1
+            else:
+                word_counts[word] = 1
+
+        most_common_word = words[0]
+
+        for word in word_counts:
+            if word_counts[word] > word_counts[most_common_word]:
+                most_common_word = word
+
+        return most_common_word
+
+
+def calculate_average_word_length(text):
+    words = re.findall(r"\b\w+\b", text)
+
+    if len(words) == 0:
+        return 0.0
+    else:
+        total_length = 0
+
+        for word in words:
+            total_length += len(word)
+
+        average_length = total_length / len(words)
+        return average_length
+
+
 def main():
     article = read_article("news_article.txt")
     search_word = "Apple"
 
     word_count = count_specific_word(article, search_word)
+    most_common_word = identify_most_common_word(article)
+    average_word_length = calculate_average_word_length(article)
 
     print("News Article Text Analysis")
     print("--------------------------")
     print("Specific word:", search_word)
     print("Specific word count:", word_count)
+    print("Most common word:", most_common_word)
+    print("Average word length:", average_word_length)
 
 
 if __name__ == "__main__":
