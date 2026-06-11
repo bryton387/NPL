@@ -1,134 +1,151 @@
 import re
 
-
-# Backup article text in case the text file is not in the same folder.
-ARTICLE_TEXT = """ACME Inc. Unveils Revolutionary Apple Pie Machine, Transforming Baking with Automation
-
-ACME Inc., a leading innovator in culinary technology, has launched a groundbreaking new device that promises to revolutionize the way apple pies are made. Dubbed the "Apple Pie Master," this machine combines cutting-edge technology with traditional baking techniques to automate the entire pie-making process, ensuring perfect pies every time.
-
-At a press conference held at ACME Inc.'s headquarters in Springfield, the company's CEO, Jane Doe, introduced the Apple Pie Master to an eager audience of journalists, culinary experts, and industry insiders. "Our goal has always been to make cooking and baking accessible and enjoyable for everyone, and with the Apple Pie Master, we are making a giant leap forward," Doe stated.
-
-The Apple Pie Master is designed to simplify the baking process while maintaining the quality and taste of a homemade pie. The machine is equipped with AI-driven sensors that can analyze the quality of ingredients, adjust cooking times, and even replicate intricate baking techniques perfected by master chefs. "This isn't just about saving time; it's about enhancing the baking experience and ensuring consistent results," Doe explained.
-
-Unpacking the Technology
-
-The heart of the Apple Pie Master lies in its advanced artificial intelligence system. This system is programmed to perform tasks such as peeling and slicing apples, mixing ingredients, and rolling out pie crusts. According to ACME Inc.'s head of product development, Dr. Emily Clark, "The AI not only replicates human actions but learns from each pie made, adjusting its techniques to improve the next one."
-
-Another innovative feature of the Apple Pie Master is its real-time monitoring capabilities. Cameras and sensors inside the machine provide continuous feedback during the pie-making process, allowing the AI to make micro-adjustments to the temperature and cooking times as needed. This ensures that each pie is baked to golden perfection.
-
-User-Friendly Features
-
-ACME Inc. has designed the Apple Pie Master with user experience in mind. The machine features a sleek, user-friendly interface with pre-programmed settings for different pie recipes."""
+# This program is a news article analyzer.
+# It reads an article from a text file and gives information about the text.
+# The program uses functions so each part has one clear job.
 
 
+# Read the news article from the txt file.
 def read_article(filename):
-    # This tries to read the article from a file first.
-    try:
-        with open(filename, "r", encoding="utf-8") as file:
-            article = file.read()
-    except FileNotFoundError:
-        article = ARTICLE_TEXT
 
-    return article
+    with open(filename, "r", encoding="utf-8") as file:
+        
+        return file.read()
 
 
+# Count number of times a specific word appears
 def count_specific_word(text, search_word):
-    # Convert both strings to lowercase so the search is not case sensitive.
-    if search_word == "":
-        return 0
-    else:
-        count = text.lower().count(search_word.lower())
-        return count
-
-
-def identify_most_common_word(text):
-    # Regex gets words without punctuation.
+    
+    
     words = re.findall(r"\b\w+\b", text.lower())
 
+   
+    return words.count(search_word.lower())
+
+
+# Find the most common word
+def identify_most_common_word(text):
+    
+    words = re.findall(r"\b\w+\b", text.lower())
+
+    # If there are no words, the function returns None instead of causing an error.
     if len(words) == 0:
         return None
-    else:
-        word_counts = {}
 
-        for word in words:
-            if word in word_counts:
-                word_counts[word] += 1
-            else:
-                word_counts[word] = 1
+    
+    word_count = {}
 
-        most_common_word = words[0]
+    
+    for word in words:
+        # If the word is already there, add 1 to its count.
+        if word in word_count:
+            word_count[word] += 1
+        else:
+            
+            word_count[word] = 1
 
-        for word in word_counts:
-            if word_counts[word] > word_counts[most_common_word]:
-                most_common_word = word
+    
+    most_common = max(word_count, key=word_count.get)
 
-        return most_common_word
+    return most_common
 
 
+# Calculate average word length
 def calculate_average_word_length(text):
+
+    # If the text is empty, return 0 because there are no words to measure.
+    if text.strip() == "":
+        return 0
+
+    # This finds all the words without changing their letters.
     words = re.findall(r"\b\w+\b", text)
 
+    # This is another safety check in case no words are found.
     if len(words) == 0:
-        return 0.0
-    else:
-        total_length = 0
+        return 0
 
-        for word in words:
-            total_length += len(word)
+    
+    total_letters = 0
 
-        average_length = total_length / len(words)
-        return average_length
+    
+    for word in words:
+        total_letters += len(word)
+
+    # Average word length is total letters divided by number of words.
+    average = total_letters / len(words)
+
+    return average
 
 
+# Count paragraphs
 def count_paragraphs(text):
+    # If the article is empty, this program counts it as 1 paragraph.
     if text.strip() == "":
         return 1
-    else:
-        paragraphs = re.split(r"\n\s*\n", text.strip())
-        paragraph_count = 0
 
-        for paragraph in paragraphs:
-            if paragraph.strip() != "":
-                paragraph_count += 1
+    
+    paragraphs = text.split("\n\n")
 
-        return paragraph_count
+    count = 0
+
+    # This loop only counts paragraphs that are not empty.
+    for paragraph in paragraphs:
+        if paragraph.strip() != "":
+            count += 1
+
+    return count
 
 
+# Count sentences
 def count_sentences(text):
+
+    # If the article is empty, this program counts it as 1 sentence.
     if text.strip() == "":
         return 1
-    else:
-        sentence_count = 0
-        index = 0
 
-        while index < len(text):
-            if text[index] == "." or text[index] == "!" or text[index] == "?":
-                sentence_count += 1
+    # re.split separates the text whenever it finds 
+    sentences = re.split(r"[.!?]+", text)
 
-            index += 1
+    count = 0
 
-        return sentence_count
+    # This loop only counts sentence parts that are not empty.
+    for sentence in sentences:
+        if sentence.strip() != "":
+            count += 1
+
+    return count
 
 
+# Main function
 def main():
-    article = read_article("news_article.txt")
-    search_word = "Apple"
 
+    # This reads the article from the file and stores it in the article variable.
+    article = read_article("news_article.txt")
+
+    print("News article analyzer")
+
+    search_word = ""
+
+    # This while loop keeps asking until the user enters a real word.
+    while search_word.strip() == "":
+        search_word = input("Enter a word to search for: ")
+
+    # These lines call the functions above and store their results in variables.
     word_count = count_specific_word(article, search_word)
-    most_common_word = identify_most_common_word(article)
-    average_word_length = calculate_average_word_length(article)
+    common_word = identify_most_common_word(article)
+    average_length = calculate_average_word_length(article)
     paragraph_count = count_paragraphs(article)
     sentence_count = count_sentences(article)
 
-    print("News Article Text Analysis")
-    print("--------------------------")
-    print("Specific word:", search_word)
-    print("Specific word count:", word_count)
-    print("Most common word:", most_common_word)
-    print("Average word length:", average_word_length)
-    print("Number of paragraphs:", paragraph_count)
-    print("Number of sentences:", sentence_count)
+    # These print statements display the final results to the user.
+    print("\n---Results---")
+    print(f"Occurrences of '{search_word}': {word_count}")
+    print(f"Most common word: {common_word}")
+    print(f"Average word length: {average_length:.2f}")
+    print(f"Number of paragraphs: {paragraph_count}")
+    print(f"Number of sentences: {sentence_count}")
 
 
 if __name__ == "__main__":
+    # This means the main function runs when this file is opened directly.
     main()
